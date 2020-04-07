@@ -21,7 +21,23 @@ class MessageAppApplicationTests {
     }
 
     @Test
-    void kafkaTest() {
+    void kafkaProducerTest() {
+        Configuration configuration = new Configuration();
+        configuration.add("mq", MQ.KAFKA);
+        configuration.add("bootstrap.servers", "116.62.150.178:9092");
+        configuration.add("acks", "all");
+        configuration.add("retries", 0);
+        configuration.add("batch.size", 16384);
+        configuration.add("linger.ms", 1);
+        configuration.add("buffer.memory", 33554432);
+        configuration.add("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+        configuration.add("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+        ConnectionFactory.build(configuration);
+        MqTemplate.send("test", new Message("这是一条MqTemplate发出的消息"));
+    }
+
+    @Test
+    void kafkaConsumerTest() throws IOException {
         Configuration configuration = new Configuration();
         configuration.add("mq", MQ.KAFKA);
         configuration.add("bootstrap.servers", "116.62.150.178:9092");
@@ -31,9 +47,15 @@ class MessageAppApplicationTests {
         configuration.add("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
         configuration.add("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
         ConnectionFactory.build(configuration);
-        MqTemplate.send("test123", new Message("这是一个mqTemplate发出的消息"));
-        Message message = MqTemplate.listen("test123");
-        System.out.println(message);
+        Connection connection = ConnectionFactory.getInstance().getConnection();
+        Consumer consumer = connection.createConsumer("test");
+        consumer.setMessageListener(new MessageListener() {
+            @Override
+            public void onMessage(Message msg) {
+                System.out.println(msg);
+            }
+        });
+        System.out.println(System.in.read());
     }
 
     @Test
@@ -44,7 +66,7 @@ class MessageAppApplicationTests {
         configuration.add("password", "admin");
         configuration.add("brokerURL", "failover:(tcp://localhost:61616)");
         ConnectionFactory.build(configuration);
-        MqTemplate.send("test123", new Message("这是一个mqTemplate发出的消息2"));
+        MqTemplate.send("test", new Message("这是一个mqTemplate发出的消息2"));
     }
 
     @Test
@@ -56,7 +78,7 @@ class MessageAppApplicationTests {
         configuration.add("brokerURL", "failover:(tcp://localhost:61616)");
         ConnectionFactory.build(configuration);
         Connection connection = ConnectionFactory.getInstance().getConnection();
-        Consumer consumer = connection.createConsumer("test123");
+        Consumer consumer = connection.createConsumer("test");
         consumer.setMessageListener(new MessageListener() {
             @Override
             public void onMessage(Message msg) {
