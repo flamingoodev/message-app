@@ -32,6 +32,8 @@ class MessageAppApplicationTests {
         configuration.add("buffer.memory", 33554432);
         configuration.add("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         configuration.add("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+        configuration.add("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+        configuration.add("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
         ConnectionFactory.build(configuration);
         MqTemplate.send("test", new Message("这是一条MqTemplate发出的消息"));
     }
@@ -44,6 +46,8 @@ class MessageAppApplicationTests {
         configuration.add("group.id", "TEST_GROUP");
         configuration.add("enable.auto.commit", "true");
         configuration.add("auto.commit.interval.ms", "1000");
+        configuration.add("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+        configuration.add("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         configuration.add("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
         configuration.add("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
         ConnectionFactory.build(configuration);
