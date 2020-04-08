@@ -24,7 +24,7 @@ class MessageAppApplicationTests {
     void kafkaProducerTest() {
         Configuration configuration = new Configuration();
         configuration.add("mq", MQ.KAFKA);
-        configuration.add("bootstrap.servers", "116.62.150.178:9092");
+        configuration.add("bootstrap.servers", "localhost:9092");
         configuration.add("acks", "all");
         configuration.add("retries", 0);
         configuration.add("batch.size", 16384);
@@ -42,7 +42,7 @@ class MessageAppApplicationTests {
     void kafkaConsumerTest() throws IOException {
         Configuration configuration = new Configuration();
         configuration.add("mq", MQ.KAFKA);
-        configuration.add("bootstrap.servers", "116.62.150.178:9092");
+        configuration.add("bootstrap.servers", "localhost:9092");
         configuration.add("group.id", "TEST_GROUP");
         configuration.add("enable.auto.commit", "true");
         configuration.add("auto.commit.interval.ms", "1000");
